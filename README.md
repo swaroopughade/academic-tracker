@@ -11,7 +11,7 @@ PostgreSQL,
 SQLAlchemy, 
 Pydantic, 
 JWT, 
-Swagger 
+Swagger,
 UI,  
 Chart.js.
 
