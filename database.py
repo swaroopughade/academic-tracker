@@ -2,8 +2,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# Update with your local PostgreSQL credentials: postgresql://username:password@localhost:5432/db_name
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/academic_tracker_db"
+# Updated with your verified PostgreSQL password: swaroop21
+SQLALCHEMY_DATABASE_URL = "postgresql://postgres:swaroop21@localhost:5432/academic_tracker_db"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
