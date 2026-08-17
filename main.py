@@ -4,7 +4,6 @@ import models
 import schemas
 from database import engine, get_db
 
-# Ensure tables exist
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Student Academic Tracker")
@@ -12,6 +11,20 @@ app = FastAPI(title="Student Academic Tracker")
 @app.get("/")
 def home():
     return {"status": "success", "message": "Database connected & API is running!"}
+
+# --- USER ENDPOINTS ---
+
+@app.post("/users/", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    db_user = models.User(**user.model_dump())
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+@app.get("/users/", response_model=list[schemas.UserResponse])
+def get_all_users(db: Session = Depends(get_db)):
+    return db.query(models.User).all()
 
 # --- STUDENT ENDPOINTS ---
 
