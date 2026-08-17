@@ -1,14 +1,26 @@
-from pydantic import BaseModel
 from datetime import date
-from typing import Optional
+from pydantic import BaseModel
+
+
+# --- AUTH SCHEMAS ---
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    username: str | None = None
+
 
 # --- USER SCHEMAS ---
 class UserBase(BaseModel):
     username: str
     role: str = "student"
 
+
 class UserCreate(UserBase):
     password: str
+
 
 class UserResponse(UserBase):
     id: int
@@ -24,8 +36,10 @@ class StudentBase(BaseModel):
     student_class: str
     division: str
 
+
 class StudentCreate(StudentBase):
     user_id: int
+
 
 class StudentResponse(StudentBase):
     id: int
@@ -42,6 +56,7 @@ class AttendanceCreate(BaseModel):
     date: date
     session_type: str  # "lecture" or "lab"
     status: str        # "present" or "absent"
+
 
 class AttendanceResponse(AttendanceCreate):
     id: int
