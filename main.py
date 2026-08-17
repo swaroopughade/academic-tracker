@@ -16,7 +16,12 @@ def home():
 
 @app.post("/users/", response_model=schemas.UserResponse, status_code=status.HTTP_201_CREATED)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = models.User(**user.model_dump())
+    # Explicitly map 'password' to 'hashed_password'
+    db_user = models.User(
+        username=user.username,
+        role=user.role,
+        hashed_password=user.password
+    )
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
