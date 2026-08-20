@@ -3,7 +3,10 @@ from typing import Literal
 from pydantic import BaseModel, Field, ConfigDict
 
 
-# --- AUTH SCHEMAS ---
+# ---------------------------------------------------------------------------
+# AUTH SCHEMAS
+# ---------------------------------------------------------------------------
+
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -13,7 +16,10 @@ class TokenData(BaseModel):
     username: str | None = None
 
 
-# --- USER SCHEMAS ---
+# ---------------------------------------------------------------------------
+# USER SCHEMAS
+# ---------------------------------------------------------------------------
+
 class UserBase(BaseModel):
     username: str
     role: str = "student"
@@ -28,7 +34,10 @@ class UserResponse(UserBase):
     model_config = ConfigDict(from_attributes=True)
 
 
-# --- STUDENT SCHEMAS ---
+# ---------------------------------------------------------------------------
+# STUDENT SCHEMAS
+# ---------------------------------------------------------------------------
+
 class StudentBase(BaseModel):
     full_name: str
     roll_number: str
@@ -47,13 +56,16 @@ class StudentResponse(StudentBase):
     model_config = ConfigDict(from_attributes=True)
 
 
-# --- SUBJECT SCHEMAS ---
+# ---------------------------------------------------------------------------
+# SUBJECT SCHEMAS
+# ---------------------------------------------------------------------------
+
 class SubjectBase(BaseModel):
-    subject_code: str = Field(..., example="CS101", description="Unique code for the subject")
-    subject_name: str = Field(..., example="Data Structures", description="Name of the subject")
-    student_class: str = Field(..., example="CS-A", description="Target class")
-    semester: str = Field(..., example="1", description="Semester identifier")
-    teacher_id: int | None = Field(None, example=2, description="User ID of assigned teacher")
+    subject_code: str  = Field(..., example="CS101")
+    subject_name: str  = Field(..., example="Data Structures")
+    student_class: str = Field(..., example="CS-A")
+    semester: str      = Field(..., example="1")
+    teacher_id: int | None = Field(None, example=2)
 
 
 class SubjectCreate(SubjectBase):
@@ -61,11 +73,11 @@ class SubjectCreate(SubjectBase):
 
 
 class SubjectUpdate(BaseModel):
-    subject_code: str | None = None
-    subject_name: str | None = None
+    subject_code: str | None  = None
+    subject_name: str | None  = None
     student_class: str | None = None
-    semester: str | None = None
-    teacher_id: int | None = None
+    semester: str | None      = None
+    teacher_id: int | None    = None
 
 
 class SubjectResponse(SubjectBase):
@@ -74,7 +86,10 @@ class SubjectResponse(SubjectBase):
     model_config = ConfigDict(from_attributes=True)
 
 
-# --- ATTENDANCE SCHEMAS ---
+# ---------------------------------------------------------------------------
+# ATTENDANCE SCHEMAS
+# ---------------------------------------------------------------------------
+
 class AttendanceBase(BaseModel):
     student_id: int
     subject_id: int
@@ -98,13 +113,16 @@ class AttendanceResponse(AttendanceBase):
     model_config = ConfigDict(from_attributes=True)
 
 
-# --- EXAM RESULTS / MARKS SCHEMAS ---
+# ---------------------------------------------------------------------------
+# DAY-2 EXAM RESULT SCHEMAS (kept for backward compatibility)
+# ---------------------------------------------------------------------------
+
 class ExamResultBase(BaseModel):
     student_id: int
     subject_id: int
-    exam_name: str = Field(..., example="Midterm", description="Name of the exam/test")
-    marks_obtained: float = Field(..., ge=0, example=85.5, description="Marks scored (non-negative)")
-    maximum_marks: float = Field(..., gt=0, example=100.0, description="Total maximum marks (greater than 0)")
+    exam_name: str  = Field(..., example="Midterm")
+    marks_obtained: float = Field(..., ge=0, example=85.5)
+    maximum_marks: float  = Field(..., gt=0, example=100.0)
 
 
 class ExamResultCreate(ExamResultBase):
@@ -112,9 +130,9 @@ class ExamResultCreate(ExamResultBase):
 
 
 class ExamResultUpdate(BaseModel):
-    exam_name: str | None = None
+    exam_name: str | None      = None
     marks_obtained: float | None = Field(None, ge=0)
-    maximum_marks: float | None = Field(None, gt=0)
+    maximum_marks: float | None  = Field(None, gt=0)
 
 
 class ExamResultResponse(ExamResultBase):
@@ -126,7 +144,10 @@ class ExamResultResponse(ExamResultBase):
     model_config = ConfigDict(from_attributes=True)
 
 
-# --- DASHBOARD & SUMMARY SCHEMAS ---
+# ---------------------------------------------------------------------------
+# DASHBOARD & SUMMARY SCHEMAS
+# ---------------------------------------------------------------------------
+
 class SubjectAttendanceSummary(BaseModel):
     subject_id: int
     subject_code: str
@@ -171,4 +192,122 @@ class StudentDashboardResponse(BaseModel):
     total_marks_obtained: float
     total_maximum_marks: float
     overall_percentage: float
-    performance_status: str  # "Excellent", "Good", "Needs Improvement", "No Data"
+    performance_status: str
+
+
+# ---------------------------------------------------------------------------
+# DAY-3: ASSIGNMENT SCHEMAS
+# ---------------------------------------------------------------------------
+
+class AssignmentBase(BaseModel):
+    title: str       = Field(..., example="Binary Trees Lab Report")
+    description: str | None = Field(None, example="Write a report on BST operations")
+    deadline: datetime = Field(..., example="2026-08-25T23:59:00")
+    subject_id: int  = Field(..., example=1)
+
+
+class AssignmentCreate(AssignmentBase):
+    pass
+
+
+class AssignmentUpdate(BaseModel):
+    title: str | None       = None
+    description: str | None = None
+    deadline: datetime | None = None
+    subject_id: int | None  = None
+
+
+class AssignmentResponse(AssignmentBase):
+    id: int
+    created_by: int | None = None
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+# ---------------------------------------------------------------------------
+# DAY-3: ASSIGNMENT SUBMISSION SCHEMAS
+# ---------------------------------------------------------------------------
+
+class SubmissionCreate(BaseModel):
+    """A student uses this to mark their assignment as submitted."""
+    assignment_id: int = Field(..., example=1)
+
+
+class SubmissionResponse(BaseModel):
+    id: int
+    assignment_id: int
+    student_id: int
+    submitted: bool
+    submitted_at: datetime | None = None
+    model_config = ConfigDict(from_attributes=True)
+
+
+# ---------------------------------------------------------------------------
+# DAY-3: EXAM SCHEMAS (new Exam model — separate from ExamResult)
+# ---------------------------------------------------------------------------
+
+class ExamBase(BaseModel):
+    name: str       = Field(..., example="Midterm 2026")
+    subject_id: int = Field(..., example=1)
+    max_marks: float = Field(..., gt=0, example=100.0)
+    exam_date: date = Field(..., example="2026-08-30")
+
+
+class ExamCreate(ExamBase):
+    pass
+
+
+class ExamUpdate(BaseModel):
+    name: str | None      = None
+    max_marks: float | None = Field(None, gt=0)
+    exam_date: date | None = None
+
+
+class ExamResponse(ExamBase):
+    id: int
+    created_by: int | None = None
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+# ---------------------------------------------------------------------------
+# DAY-3: MARK SCHEMAS (score for a student in a specific Exam)
+# ---------------------------------------------------------------------------
+
+class MarkCreate(BaseModel):
+    student_id: int = Field(..., example=1)
+    exam_id: int    = Field(..., example=1)
+    score: float    = Field(..., ge=0, example=78.5)
+
+
+class MarkUpdate(BaseModel):
+    score: float = Field(..., ge=0, example=82.0)
+
+
+class MarkResponse(BaseModel):
+    id: int
+    student_id: int
+    exam_id: int
+    score: float
+    # Grade is calculated on-the-fly from score / exam.max_marks, not stored
+    grade: str
+    percentage: float
+    entered_by: int | None = None
+    created_at: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+# ---------------------------------------------------------------------------
+# DAY-3: SMART ALERTS SCHEMA
+# One endpoint returns all three alert types combined.
+# ---------------------------------------------------------------------------
+
+class AlertItem(BaseModel):
+    alert_type: str    # "attendance_shortage", "deadline_reminder", "performance_warning"
+    message: str
+
+
+class StudentAlertsResponse(BaseModel):
+    student_id: int
+    full_name: str
+    alerts: list[AlertItem]
