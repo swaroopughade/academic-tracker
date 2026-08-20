@@ -10,6 +10,9 @@ from pydantic import BaseModel, Field, ConfigDict
 class Token(BaseModel):
     access_token: str
     token_type: str
+    role: str | None = None
+    user_id: int | None = None
+    student_id: int | None = None
 
 
 class TokenData(BaseModel):

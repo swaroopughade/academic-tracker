@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Academic Dashboard</title>
+    <!-- Chart.js CDN for rendering performance chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Minimal Day 4 layout — functional and organized */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px 40px;
+            background-color: #f4f6f9;
+        }
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+        .logout-btn {
+            background-color: #cc0000;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .logout-btn:hover {
+            background-color: #990000;
+        }
+        .section-card {
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+        }
+        .alert-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .alert-box.danger {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .alert-box.info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #eee;
+        }
+        .chart-container {
+            max-width: 650px;
+            margin-top: 15px;
+        }
+        .status-badge {
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header & Logout -->
+    <div class="header-bar">
+        <div>
+            <h2>Student Academic Dashboard</h2>
+            <p id="welcomeUser">Loading profile...</p>
+        </div>
+        <button id="logoutBtn" class="logout-btn">Log Out</button>
+    </div>
+
+    <!-- Student Profile Summary -->
+    <div class="section-card">
+        <h3>Student Information</h3>
+        <div id="studentInfo">Loading student details...</div>
+    </div>
+
+    <!-- Smart Alerts Section -->
+    <div class="section-card">
+        <h3>Active Alerts & Notifications</h3>
+        <div id="alertsContainer">Checking for active alerts...</div>
+    </div>
+
+    <!-- Attendance Section -->
+    <div class="section-card">
+        <h3>Subject Attendance</h3>
+        <div id="attendanceContainer">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Subject Code</th>
+                        <th>Subject Name</th>
+                        <th>Total Classes</th>
+                        <th>Present</th>
+                        <th>Absent</th>
+                        <th>Late</th>
+                        <th>Attendance %</th>
+                    </tr>
+                </thead>
+                <tbody id="attendanceTableBody">
+                    <tr><td colspan="7">Loading attendance records...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Marks / Exam Results Section -->
+    <div class="section-card">
+        <h3>Exam Marks & Grades</h3>
+        <div id="marksContainer">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Exam Name</th>
+                        <th>Score</th>
+                        <th>Max Marks</th>
+                        <th>Percentage</th>
+                        <th>Grade</th>
+                    </tr>
+                </thead>
+                <tbody id="marksTableBody">
+                    <tr><td colspan="6">Loading marks records...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Performance Chart (Chart.js) -->
+    <div class="section-card">
+        <h3>Performance Overview Chart</h3>
+        <div class="chart-container">
+            <canvas id="marksChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Connect external JavaScript file -->
+    <script src="student_dashboard.js"></script>
+</body>
+</html>

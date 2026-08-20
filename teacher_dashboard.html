@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher / Admin Dashboard</title>
+    <style>
+        /* Minimal Day 4 layout — clean and functional */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px 40px;
+            background-color: #f4f6f9;
+        }
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+        .logout-btn {
+            background-color: #cc0000;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .logout-btn:hover {
+            background-color: #990000;
+        }
+        .section-card {
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #aaa;
+            border-radius: 4px;
+        }
+        button.submit-btn {
+            padding: 10px 20px;
+            background-color: #16a34a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        button.submit-btn:hover {
+            background-color: #15803d;
+        }
+        .message-box {
+            margin-top: 12px;
+            padding: 10px 14px;
+            border-radius: 4px;
+            display: none;
+        }
+        .message-box.success {
+            display: block;
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        .message-box.error {
+            display: block;
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header & Logout -->
+    <div class="header-bar">
+        <div>
+            <h2>Teacher / Admin Academic Dashboard</h2>
+            <p id="welcomeUser">Logged in as Teacher</p>
+        </div>
+        <button id="logoutBtn" class="logout-btn">Log Out</button>
+    </div>
+
+    <!-- Mark Attendance Form Section -->
+    <div class="section-card">
+        <h3>Mark Student Attendance</h3>
+        <p>Select or enter the student ID, subject ID, date, and status to record attendance.</p>
+        
+        <form id="attendanceForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="studentIdInput">Student ID:</label>
+                    <input type="number" id="studentIdInput" required placeholder="e.g. 1" min="1">
+                </div>
+
+                <div class="form-group">
+                    <label for="subjectIdInput">Subject ID:</label>
+                    <input type="number" id="subjectIdInput" required placeholder="e.g. 1" min="1">
+                </div>
+
+                <div class="form-group">
+                    <label for="statusSelect">Attendance Status:</label>
+                    <select id="statusSelect" required>
+                        <option value="Present">Present</option>
+                        <option value="Absent">Absent</option>
+                        <option value="Late">Late</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="attendanceDateInput">Attendance Date:</label>
+                    <input type="date" id="attendanceDateInput" required>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Attendance</button>
+        </form>
+
+        <div id="attendanceMessage" class="message-box"></div>
+    </div>
+
+    <!-- Students Directory Table -->
+    <div class="section-card">
+        <h3>Registered Students List</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>Full Name</th>
+                    <th>Roll Number</th>
+                    <th>Class</th>
+                    <th>Division</th>
+                    <th>Semester</th>
+                </tr>
+            </thead>
+            <tbody id="studentsTableBody">
+                <tr><td colspan="6">Loading students list...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Available Subjects Table -->
+    <div class="section-card">
+        <h3>Available Subjects List</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Subject ID</th>
+                    <th>Code</th>
+                    <th>Subject Name</th>
+                    <th>Target Class</th>
+                    <th>Semester</th>
+                    <th>Teacher ID</th>
+                </tr>
+            </thead>
+            <tbody id="subjectsTableBody">
+                <tr><td colspan="6">Loading subjects list...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Connect external JavaScript file -->
+    <script src="teacher_dashboard.js"></script>
+</body>
+</html>

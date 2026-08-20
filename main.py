@@ -12,6 +12,8 @@ from routers import subjects, attendance, marks, dashboard
 # Day-3 routers
 from routers import assignments, exams, alerts
 
+from fastapi.middleware.cors import CORSMiddleware
+
 # Automatically create every table that doesn't exist yet in PostgreSQL
 models.Base.metadata.create_all(bind=engine)
 
@@ -21,7 +23,22 @@ app = FastAPI(
         "Full-stack academic backend: Auth, Subjects, Attendance, "
         "Marks, Dashboard, Assignments, Exams & Smart Alerts"
     ),
-    version="3.0.0",
+    version="4.0.0",
+)
+
+# ---------------------------------------------------------------------------
+# CORS MIDDLEWARE SETUP
+# Allows browser frontends (e.g. Live Server on port 5500, file://, localhost)
+# to make API requests without being blocked by CORS policy.
+# ---------------------------------------------------------------------------
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "*",  # Allows all origins for local development (e.g. Live Server, file://)
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows GET, POST, PUT, DELETE, etc.
+    allow_headers=["*"],  # Allows headers like Authorization, Content-Type
 )
 
 # ---------------------------------------------------------------------------
@@ -45,7 +62,7 @@ def home():
     return {
         "status": "success",
         "message": "Student Academic Tracker API is live!",
-        "version": "3.0.0",
+        "version": "4.0.0",
     }
 
 
@@ -61,7 +78,7 @@ def login(
     """
     OAuth2 Password Flow.
     Send username + password as form data.
-    Returns a signed JWT access token valid for 60 minutes.
+    Returns a signed JWT access token valid for 60 minutes, along with user role and student profile ID (if applicable).
     """
     user = db.query(models.User).filter(
         models.User.username == form_data.username
@@ -74,11 +91,21 @@ def login(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+    # Check if student profile exists for this user
+    student = db.query(models.Student).filter(models.Student.user_id == user.id).first()
+    student_id = student.id if student else None
+
     access_token = auth.create_access_token(
         data={"sub": user.username, "role": user.role},
         expires_delta=timedelta(minutes=auth.ACCESS_TOKEN_EXPIRE_MINUTES),
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "role": user.role,
+        "user_id": user.id,
+        "student_id": student_id,
+    }
 
 
 # ---------------------------------------------------------------------------
